@@ -272,12 +272,6 @@ web_scraper → data_mining → summarizer → ppt_generator
 web_scraper → data_mining → outliner → translator
 ```
 
-### CORS Configuration
-
-The agent whitelists the orchestrator domain for cross-origin requests:
-- `https://jokitugas.bananaunion.web.id`
-- `http://localhost:3000` *(development)*
-
 ---
 
 ## 📁 Project Structure
