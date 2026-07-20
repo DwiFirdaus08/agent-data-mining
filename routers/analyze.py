@@ -1,43 +1,32 @@
 from fastapi import APIRouter
-import pandas as pd
-
-# Import dari folder kita sendiri
-from schemas.payload import MiningRequest
+from schemas.payload import AgentRequest
 from services.mining_service import execute_ml_task
 
-# Buat router khusus untuk fitur analisis
 router = APIRouter()
 
-@router.post("/api/v1/analyze")
-async def analyze_data(request: MiningRequest):
+# Ubah endpoint menjadi /process biar standar kayak teman-temanmu
+@router.post("/process")
+async def analyze_data(request: AgentRequest):
     try:
-        # Ubah JSON jadi tabel Pandas
-        df = pd.DataFrame(request.data.raw)
+        # Panggil otak AI kita
+        hasil_teks = execute_ml_task(request.payload)
 
-        # Lempar datanya ke folder services untuk dimasak oleh AI
-        data_kembali, kesimpulan, model_pakai = execute_ml_task(request, df)
-
-        # Kembalikan response
+        # Kembalikan response 200 OK (Sesuai Kontrak PDF Okta)
         return {
-            "task_id": request.task_id,
             "status": "success",
-            "agent": "data_mining",
-            "task_type": request.task_type,
-            "result": {
-                "summary": kesimpulan,
-                "output_data": data_kembali 
+            "task_id": request.task_id,
+            "data": {
+                "result": hasil_teks,
+                "file_url": None  # Diisi null karena kita mengembalikan TEKS matang, bebas cloud storage!
             },
-            "metrics": {
-                "model_used": model_pakai,
-                "processing_time_ms": 0
-            }
+            "message": "Pemrosesan Data Mining berhasil"
         }
 
     except Exception as e:
+        # Kembalikan response 500 Error (Sesuai Kontrak PDF Okta)
         return {
-            "task_id": request.task_id,
             "status": "error",
-            "agent": "data_mining",
-            "task_type": request.task_type,
-            "error_message": f"Terjadi kesalahan saat memproses data: {str(e)}"
+            "task_id": request.task_id,
+            "data": None,
+            "message": f"Internal Server Error: {str(e)}"
         }

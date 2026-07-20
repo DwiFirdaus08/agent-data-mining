@@ -1,24 +1,17 @@
 from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
+from typing import Optional
 
-class DataPayload(BaseModel):
-    raw: List[Dict[str, Any]]
-    format: str
-    columns: List[str]
+class PayloadData(BaseModel):
+    url: Optional[str] = ""
+    keyword: Optional[str] = ""
+    raw_text: Optional[str] = ""
 
-class ParamsPayload(BaseModel):
-    n_clusters: Optional[int] = None
-    min_support: Optional[float] = None
-    target_column: Optional[str] = None
-    features: List[str]
+class Metadata(BaseModel):
+    sender: Optional[str] = "orchestrator"
+    timestamp: Optional[int] = 0
 
-class ContextPayload(BaseModel):
-    user_request: Optional[str] = None
-
-class MiningRequest(BaseModel):
+class AgentRequest(BaseModel):
     task_id: str
-    task_type: str
-    source: str
-    data: DataPayload
-    params: ParamsPayload
-    context: ContextPayload
+    agent_type: str
+    payload: PayloadData
+    metadata: Metadata
