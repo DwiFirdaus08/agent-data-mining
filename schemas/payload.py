@@ -14,4 +14,4 @@ class AgentRequest(BaseModel):
     task_id: str
     agent_type: str
     payload: PayloadData
-    metadata: Metadata
+    metadata: Optional[Metadata] = None
